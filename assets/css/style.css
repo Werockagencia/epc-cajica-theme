@@ -1319,3 +1319,43 @@ body.menu-movil-abierto { overflow: hidden; }
 @media (max-width: 900px) {
   .nav-principal-epc .wp-block-navigation__responsive-container-open { margin-left: auto; }
 }
+
+/* ===================== NOTICIAS (home) — Query Loop metido dentro de .noticias-lista ===================== */
+/* El Query Loop nativo de WP mete <div class="wp-block-query"><ul class="wp-block-post-template"><li>
+   entre .noticias-lista y las tarjetas .tarjeta-noticia, así que el grid de 3 columnas del wireframe
+   (que esperaba hijos directos) no aplicaba. Se mueve el grid un nivel más adentro, al <ul> real. */
+/* .noticias-lista original del wireframe esperaba las tarjetas como hijas
+   directas (display:grid ahí mismo); ahora el grid real vive un nivel más
+   adentro (el <ul> del Query Loop), así que aquí se neutraliza a bloque simple. */
+.noticias-lista { display: block; }
+.noticias-lista .wp-block-query { width: 100%; }
+.noticias-lista ul.wp-block-post-template {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.noticias-lista ul.wp-block-post-template > li { list-style: none; margin: 0; }
+.tarjeta-noticia .wp-block-post-featured-image { margin: 0 0 14px; }
+.tarjeta-noticia .wp-block-post-featured-image img { width: 100%; height: 140px; object-fit: cover; border-radius: var(--radio-m); display: block; }
+.tarjeta-noticia .wp-block-post-terms { font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--verde-oscuro); }
+.tarjeta-noticia .wp-block-post-terms a { color: inherit; }
+.tarjeta-noticia .wp-block-post-date { font-size: 12px; color: var(--gris-texto); display: block; margin: 4px 0 10px; }
+.tarjeta-noticia .wp-block-post-title { font-size: 15.5px; line-height: 1.4; margin: 0 0 10px; }
+.tarjeta-noticia .wp-block-post-title a { color: var(--azul-oscuro); }
+.tarjeta-noticia p { margin: 0; }
+@media (max-width: 1024px) {
+  .noticias-lista ul.wp-block-post-template { grid-template-columns: 1fr; }
+}
+
+/* ===================== Certificaciones (ICONTEC / IQNet) — home ===================== */
+.certificaciones-home {
+  display: flex; align-items: center; justify-content: center; gap: 40px;
+  flex-wrap: wrap; padding-top: 20px; border-top: 1px solid var(--gris-borde);
+}
+.certificaciones-titulo { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--gris-texto); }
+.certificaciones-logos { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+.certificaciones-logos img { height: 56px; width: auto; filter: grayscale(1); opacity: .75; transition: .2s; }
+.certificaciones-logos a:hover img { filter: none; opacity: 1; }

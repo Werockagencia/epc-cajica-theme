@@ -458,3 +458,23 @@ table.panel-tabla tr:hover td { background: var(--gris-claro); }
   .tramite-grid { grid-template-columns: 1fr; }
   .cuenta-card { flex-direction: column; align-items: flex-start; }
 }
+
+/* Banner "¿Prefieres hacerlo por chat?" (Trámites en línea) — estaba como
+   <style> suelto dentro de panel/tramites.html en el wireframe, se sube
+   acá para que quede disponible en cualquier página del panel. */
+.chat-primero {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  background: linear-gradient(120deg, var(--verde-oscuro) 0%, #4c7d1e 100%);
+  color: var(--blanco); border-radius: var(--radio-m); padding: 26px 28px; margin-bottom: 26px;
+}
+.chat-primero .icono-chat {
+  width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,.16);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.chat-primero .icono-chat svg { width: 28px; height: 28px; }
+.chat-primero .txt { flex: 1; min-width: 220px; }
+.chat-primero .txt .etq { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.75); }
+.chat-primero .txt h2 { font-size: 19px; margin-top: 4px; }
+.chat-primero .txt p { font-size: 13.5px; color: rgba(255,255,255,.82); margin-top: 5px; }
+.chat-primero .btn { background: var(--blanco); color: var(--verde-oscuro); flex-shrink: 0; }
+.chat-primero .btn:hover { background: rgba(255,255,255,.9); }

@@ -10,6 +10,9 @@ add_filter( 'template_include', function ( $template ) {
 	if ( is_page( 'crear-cuenta' ) ) {
 		return get_template_directory() . '/page-templates/crear-cuenta.php';
 	}
+	if ( is_page( 'pqrs' ) ) {
+		return get_template_directory() . '/page-templates/pqrs-publico.php';
+	}
 	if ( epc_is_panel_page() ) {
 		$slug     = get_post_field( 'post_name', get_the_ID() );
 		$specific = get_template_directory() . "/page-templates/panel-{$slug}.php";

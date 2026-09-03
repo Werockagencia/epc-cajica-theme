@@ -17,6 +17,8 @@ add_filter( 'show_admin_bar', function ( $show ) {
 } );
 require get_template_directory() . '/inc/auth.php';
 require get_template_directory() . '/inc/panel-shell.php';
+require get_template_directory() . '/inc/pqrs-tramites.php';
+require get_template_directory() . '/inc/vinculos.php';
 
 /**
  * Abre el <html><head>...<body> de una plantilla PHP clásica (login/panel),
