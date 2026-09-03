@@ -1350,6 +1350,25 @@ body.menu-movil-abierto { overflow: hidden; }
   .noticias-lista ul.wp-block-post-template { grid-template-columns: 1fr; }
 }
 
+/* ===================== Tabla de datos genérica (público) =====================
+   Duplicado a propósito de panel.css: esa hoja solo carga en /login/ y /panel/*,
+   pero varias páginas públicas (Portafolio de servicios, Financiera) también
+   necesitan tablas de datos — sin esto, .panel-tabla se veía como texto plano
+   sin bordes ni columnas (bug real encontrado en la auditoría). */
+.tabla-wrap { overflow-x: auto; }
+table.panel-tabla { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 560px; }
+table.panel-tabla th {
+  text-align: left; font-family: var(--fuente-titulo); font-size: 11.5px;
+  text-transform: uppercase; letter-spacing: .06em; color: var(--gris-texto);
+  padding: 10px 14px; border-bottom: 2px solid var(--gris-borde);
+  white-space: nowrap;
+}
+table.panel-tabla td { padding: 14px; border-bottom: 1px solid var(--gris-borde); color: var(--azul-oscuro); }
+table.panel-tabla tr:last-child td { border-bottom: none; }
+table.panel-tabla tr:hover td { background: var(--gris-claro); }
+.enlace-tabla { color: var(--azul); font-weight: 700; }
+.enlace-tabla:hover { text-decoration: underline; }
+
 /* ===================== Certificaciones (ICONTEC / IQNet) — home ===================== */
 .certificaciones-home {
   display: flex; align-items: center; justify-content: center; gap: 40px;
