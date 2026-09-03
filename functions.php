@@ -3,6 +3,47 @@
  * EPC Cajicá — funciones del tema.
  */
 
+require get_template_directory() . '/inc/roles.php';
+
+// El Portal del Ciudadano no es zona de administración: sin barra de admin
+// para los roles del panel, aunque sí para editores/administradores.
+add_filter( 'show_admin_bar', function ( $show ) {
+	$user = wp_get_current_user();
+	$epc_roles = [ 'epc_usuario', 'epc_propietario', 'epc_arrendatario' ];
+	if ( array_intersect( $epc_roles, (array) $user->roles ) ) {
+		return false;
+	}
+	return $show;
+} );
+require get_template_directory() . '/inc/auth.php';
+require get_template_directory() . '/inc/panel-shell.php';
+
+/**
+ * Abre el <html><head>...<body> de una plantilla PHP clásica (login/panel),
+ * ya que estas no pasan por header.html del tema de bloques.
+ */
+function epc_html_open( $title ) {
+	?><!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+<meta charset="<?php bloginfo( 'charset' ); ?>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><?php echo esc_html( $title ); ?></title>
+<?php wp_head(); ?>
+</head>
+<body <?php body_class(); ?>>
+<?php wp_body_open(); ?>
+	<?php
+}
+
+function epc_html_close() {
+	wp_footer();
+	?>
+</body>
+</html>
+	<?php
+}
+
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'wp-block-styles' );
 	add_theme_support( 'editor-styles' );
@@ -50,7 +91,7 @@ add_action( 'wp_enqueue_scripts', function () {
 		true
 	);
 
-	if ( epc_is_panel_page() ) {
+	if ( epc_is_panel_page() || is_page( 'login' ) || is_page( 'crear-cuenta' ) ) {
 		wp_enqueue_style(
 			'epc-cajica-panel',
 			$theme_uri . '/assets/css/panel.css',
