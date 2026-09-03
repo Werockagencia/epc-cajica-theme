@@ -30,7 +30,10 @@ if ( $es_arrendatario && ! empty( $_POST['epc_solicitar_vinculo'] ) && wp_verify
 	$solicitud_enviada = true;
 }
 
-$mi_estado = $es_arrendatario ? epc_vinculo_estado( $user->ID, $cuenta_id ) : null;
+$mi_estado  = $es_arrendatario ? epc_vinculo_estado( $user->ID, $cuenta_id ) : null;
+$vinculos   = $es_propietario ? epc_vinculos_de_cuenta( $cuenta_id ) : [];
+$pendientes = array_filter( $vinculos, fn( $v ) => 'pendiente' === $v['estado'] );
+$aprobados  = array_filter( $vinculos, fn( $v ) => 'aprobado' === $v['estado'] );
 
 epc_html_open( 'Mis cuentas — Portal del Ciudadano · EPC Cajicá' );
 epc_panel_open( 'mis-cuentas' );
@@ -75,6 +78,9 @@ epc_panel_open( 'mis-cuentas' );
 					<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
 						<span class="badge-cuenta"><span class="punto"></span>Medidor MED-04471</span>
 						<span class="rol-badge"><?php echo esc_html( epc_user_role_label( $user ) ); ?> de esta cuenta</span>
+						<?php if ( $pendientes ) : ?>
+							<span class="badge-cuenta" style="background:#fff7ed;color:var(--naranja-h)"><span class="punto" style="background:var(--naranja)"></span><?php echo count( $pendientes ); ?> solicitud<?php echo 1 === count( $pendientes ) ? '' : 'es'; ?> de arrendatario pendiente<?php echo 1 === count( $pendientes ) ? '' : 's'; ?></span>
+						<?php endif; ?>
 					</div>
 				</div>
 			</div>
@@ -121,10 +127,34 @@ epc_panel_open( 'mis-cuentas' );
 			<?php if ( $es_propietario ) : ?>
 				<h3>Trámites exclusivos del propietario</h3>
 				<p style="font-size:13.5px;color:var(--gris-texto);margin-bottom:14px">Por ser el titular registrado de este predio, eres la única persona que puede gestionar estos trámites.</p>
-				<div style="display:flex;gap:10px;flex-wrap:wrap">
+				<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px">
 					<button class="btn btn-azul" type="button">Acuerdo de pago</button>
 					<button class="btn btn-outline" type="button">Cambio de suscriptor</button>
 				</div>
+
+				<h3>Solicitudes de arrendatarios</h3>
+				<p style="font-size:13px;color:var(--gris-texto);margin-bottom:14px">Solo tú, como propietario validado, puedes aprobar o quitar el acceso de arrendatarios a esta cuenta.</p>
+				<?php if ( ! $pendientes ) : ?>
+					<p style="font-size:13px;color:var(--gris-texto);margin-bottom:18px">No tienes solicitudes pendientes.</p>
+				<?php else : foreach ( $pendientes as $v ) : ?>
+					<div class="medidor-fila">
+						<div><strong style="font-size:13.5px;color:var(--azul-oscuro)"><?php echo esc_html( $v['user']->display_name ); ?></strong><div style="font-size:12px;color:var(--gris-texto)">Documento: <?php echo esc_html( $v['user']->user_login ); ?> · Pendiente de aprobación</div></div>
+						<div style="display:flex;gap:8px">
+							<form method="post"><?php wp_nonce_field( 'epc_vinculo', 'epc_vinculo_nonce' ); ?><input type="hidden" name="epc_vinculo_user" value="<?php echo esc_attr( $v['user']->ID ); ?>"><input type="hidden" name="epc_vinculo_accion" value="aprobar"><button class="btn-mini" type="submit">Aprobar</button></form>
+							<form method="post"><?php wp_nonce_field( 'epc_vinculo', 'epc_vinculo_nonce' ); ?><input type="hidden" name="epc_vinculo_user" value="<?php echo esc_attr( $v['user']->ID ); ?>"><input type="hidden" name="epc_vinculo_accion" value="rechazar"><button class="btn-mini" style="background:transparent;border:1px solid rgba(214,69,69,.35);color:var(--rojo)" type="submit">Rechazar</button></form>
+						</div>
+					</div>
+				<?php endforeach; endif; ?>
+
+				<h3 style="margin-top:20px">Arrendatarios con acceso</h3>
+				<?php if ( ! $aprobados ) : ?>
+					<p style="font-size:13px;color:var(--gris-texto);margin-bottom:8px">Todavía no le has dado acceso a ningún arrendatario.</p>
+				<?php else : foreach ( $aprobados as $v ) : ?>
+					<div class="medidor-fila">
+						<div><strong style="font-size:13.5px;color:var(--azul-oscuro)"><?php echo esc_html( $v['user']->display_name ); ?></strong><div style="font-size:12px;color:var(--gris-texto)">Acceso activo · Puede ver facturas, consumo y pagar</div></div>
+						<form method="post"><?php wp_nonce_field( 'epc_vinculo', 'epc_vinculo_nonce' ); ?><input type="hidden" name="epc_vinculo_user" value="<?php echo esc_attr( $v['user']->ID ); ?>"><input type="hidden" name="epc_vinculo_accion" value="quitar"><button class="btn-mini" style="background:transparent;border:1px solid rgba(214,69,69,.35);color:var(--rojo)" type="submit">Quitar acceso</button></form>
+					</div>
+				<?php endforeach; endif; ?>
 			<?php endif; ?>
 
 			<h3>Preferencias de notificación</h3>
@@ -143,41 +173,6 @@ epc_panel_open( 'mis-cuentas' );
 
 	<?php endif; ?>
 </div>
-
-<?php if ( $es_propietario ) :
-	$vinculos    = epc_vinculos_de_cuenta( $cuenta_id );
-	$pendientes  = array_filter( $vinculos, fn( $v ) => 'pendiente' === $v['estado'] );
-	$aprobados   = array_filter( $vinculos, fn( $v ) => 'aprobado' === $v['estado'] );
-?>
-<div class="panel-card">
-	<div class="panel-card-header">
-		<h2>Solicitudes de arrendatarios</h2>
-		<p>Solo tú, como propietario validado de la cuenta <?php echo esc_html( $cuenta_id ); ?>, puedes aprobar o quitar el acceso de arrendatarios.</p>
-	</div>
-
-	<?php if ( ! $pendientes ) : ?>
-		<p style="font-size:13.5px;color:var(--gris-texto)">No tienes solicitudes pendientes.</p>
-	<?php else : foreach ( $pendientes as $v ) : ?>
-		<div class="medidor-fila">
-			<div><strong style="font-size:13.5px;color:var(--azul-oscuro)"><?php echo esc_html( $v['user']->display_name ); ?></strong><div style="font-size:12px;color:var(--gris-texto)">Documento: <?php echo esc_html( $v['user']->user_login ); ?> · Pendiente de aprobación</div></div>
-			<div style="display:flex;gap:8px">
-				<form method="post"><?php wp_nonce_field( 'epc_vinculo', 'epc_vinculo_nonce' ); ?><input type="hidden" name="epc_vinculo_user" value="<?php echo esc_attr( $v['user']->ID ); ?>"><input type="hidden" name="epc_vinculo_accion" value="aprobar"><button class="btn-mini" type="submit">Aprobar</button></form>
-				<form method="post"><?php wp_nonce_field( 'epc_vinculo', 'epc_vinculo_nonce' ); ?><input type="hidden" name="epc_vinculo_user" value="<?php echo esc_attr( $v['user']->ID ); ?>"><input type="hidden" name="epc_vinculo_accion" value="rechazar"><button class="btn-mini" style="background:transparent;border:1px solid rgba(214,69,69,.35);color:var(--rojo)" type="submit">Rechazar</button></form>
-			</div>
-		</div>
-	<?php endforeach; endif; ?>
-
-	<h3 style="margin-top:22px">Arrendatarios con acceso</h3>
-	<?php if ( ! $aprobados ) : ?>
-		<p style="font-size:13.5px;color:var(--gris-texto)">Todavía no le has dado acceso a ningún arrendatario.</p>
-	<?php else : foreach ( $aprobados as $v ) : ?>
-		<div class="medidor-fila">
-			<div><strong style="font-size:13.5px;color:var(--azul-oscuro)"><?php echo esc_html( $v['user']->display_name ); ?></strong><div style="font-size:12px;color:var(--gris-texto)">Acceso activo · Puede ver facturas, consumo y pagar</div></div>
-			<form method="post"><?php wp_nonce_field( 'epc_vinculo', 'epc_vinculo_nonce' ); ?><input type="hidden" name="epc_vinculo_user" value="<?php echo esc_attr( $v['user']->ID ); ?>"><input type="hidden" name="epc_vinculo_accion" value="quitar"><button class="btn-mini" style="background:transparent;border:1px solid rgba(214,69,69,.35);color:var(--rojo)" type="submit">Quitar acceso</button></form>
-		</div>
-	<?php endforeach; endif; ?>
-</div>
-<?php endif; ?>
 
 <?php
 epc_panel_close();
