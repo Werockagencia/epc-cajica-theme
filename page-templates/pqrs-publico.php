@@ -33,9 +33,18 @@ if ( ! empty( $_POST['epc_pqrs_pub_submit'] ) && wp_verify_nonce( $_POST['epc_pq
 		"Radicado: {$radicado_nuevo}\nAnónima: " . ( $anonimo ? 'Sí' : 'No' ) . "\nRevisar en el panel de administración de WordPress." );
 }
 
-if ( ! empty( $_POST['epc_pqrs_consulta_submit'] ) && wp_verify_nonce( $_POST['epc_pqrs_consulta_nonce'] ?? '', 'epc_pqrs_consulta' ) ) {
-	$radicado_buscado = sanitize_text_field( wp_unslash( $_POST['radicado'] ?? '' ) );
-	$identificador     = sanitize_text_field( wp_unslash( $_POST['identificador'] ?? '' ) );
+// La consulta es solo lectura (no cambia datos), así que se acepta por GET
+// sin nonce -- permite un buscador de radicado embebido en otras páginas
+// (ej. el widget del Home) con un <form method="get"> plano, sin depender
+// de que WordPress haya podido renderizar un campo de nonce ahí.
+$consulta_params = $_POST['epc_pqrs_consulta_submit'] ?? $_GET['consultar'] ?? null;
+if ( $consulta_params ) {
+	$origen = ! empty( $_POST['epc_pqrs_consulta_submit'] ) ? $_POST : $_GET;
+	if ( ! empty( $_POST['epc_pqrs_consulta_submit'] ) && ! wp_verify_nonce( $_POST['epc_pqrs_consulta_nonce'] ?? '', 'epc_pqrs_consulta' ) ) {
+		$origen = [];
+	}
+	$radicado_buscado = sanitize_text_field( wp_unslash( $origen['radicado'] ?? '' ) );
+	$identificador     = sanitize_text_field( wp_unslash( $origen['identificador'] ?? '' ) );
 
 	$posts = get_posts( [
 		'post_type'   => 'epc_pqrs',
