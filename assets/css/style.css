@@ -1320,6 +1320,55 @@ body.menu-movil-abierto { overflow: hidden; }
   .nav-principal-epc .wp-block-navigation__responsive-container-open { margin-left: auto; }
 }
 
+/* ===================== Mega-menú "Servicios" (encabezado) =====================
+   Antes "Servicios" era un enlace plano a /servicios/ sin desplegable, la
+   única entrada del mega-menú "Servicios" del sitio actual (8 columnas) que
+   no tenía ningún equivalente en el sitio nuevo. Se agrega como panel a todo
+   lo ancho, debajo del header, con ícono por enlace -- reorganizado en 4
+   columnas claras en vez de las 8 del sitio actual (varias con enlaces
+   muertos "#"). Se activa con JS (hover en escritorio, click en táctil)
+   sobre el enlace "Servicios" ya renderizado por el bloque de navegación. */
+.encabezado { position: relative; }
+.nav-principal-epc .wp-block-navigation-item.tiene-mega > .wp-block-navigation-item__content { display: inline-flex; align-items: center; gap: 5px; }
+.nav-principal-epc .wp-block-navigation-item.tiene-mega .flecha-mega { width: 9px; height: 9px; border-right: 1.8px solid currentColor; border-bottom: 1.8px solid currentColor; transform: rotate(45deg); margin-top: -3px; transition: transform .18s; }
+.nav-principal-epc .wp-block-navigation-item.tiene-mega.abierto .flecha-mega { transform: rotate(-135deg); margin-top: 3px; }
+
+.servicios-mega {
+  display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 180;
+  background: var(--blanco); border-top: 1px solid var(--gris-borde);
+  box-shadow: 0 24px 48px rgba(4,57,86,.14);
+}
+.servicios-mega.abierto { display: block; }
+.servicios-mega-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 32px 0; }
+.servicios-mega-titulo {
+  display: block; font-family: var(--fuente-titulo); font-size: 11px; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--azul); margin-bottom: 14px;
+}
+.servicios-mega-col { padding: 0 20px; border-left: 1px solid var(--gris-borde); display: flex; flex-direction: column; }
+.servicios-mega-col:first-child { border-left: none; padding-left: 0; }
+.servicios-mega-col a {
+  display: flex; align-items: center; gap: 11px; font-size: 13.5px; font-weight: 600;
+  color: var(--azul-oscuro); padding: 8px 10px; border-radius: 10px; margin: 0 -10px;
+  transition: .16s;
+}
+.servicios-mega-col a:hover { background: var(--gris-claro); color: var(--azul); }
+.servicios-mega-icono {
+  width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+  background: var(--gris-claro); color: var(--azul);
+  display: flex; align-items: center; justify-content: center;
+}
+.servicios-mega-col a:hover .servicios-mega-icono { background: var(--azul); color: var(--blanco); }
+.servicios-mega-icono svg { width: 16px; height: 16px; }
+.servicios-mega-destacado { justify-content: flex-start; }
+.servicios-mega-banner {
+  margin-top: auto; background: linear-gradient(135deg, var(--azul-oscuro), var(--verde-oscuro));
+  border-radius: var(--radio-m); padding: 18px; margin-top: 18px;
+}
+.servicios-mega-banner p { color: rgba(255,255,255,.85); font-size: 12.5px; margin-bottom: 8px; }
+.servicios-mega-cta { color: var(--blanco); font-weight: 700; font-size: 13px; }
+@media (max-width: 1024px) { .servicios-mega-inner { grid-template-columns: 1fr 1fr; row-gap: 26px; } .servicios-mega-col { border-left: none; padding-left: 0; } }
+@media (max-width: 640px) { .servicios-mega { position: static; box-shadow: none; } .servicios-mega-inner { grid-template-columns: 1fr; padding: 12px 0; } }
+
 /* ===================== NOTICIAS (home) — Query Loop metido dentro de .noticias-lista ===================== */
 /* El Query Loop nativo de WP mete <div class="wp-block-query"><ul class="wp-block-post-template"><li>
    entre .noticias-lista y las tarjetas .tarjeta-noticia, así que el grid de 3 columnas del wireframe
