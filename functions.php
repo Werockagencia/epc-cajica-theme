@@ -95,7 +95,7 @@ add_action( 'wp_enqueue_scripts', function () {
 		true
 	);
 
-	if ( epc_is_panel_page() || is_page( 'login' ) || is_page( 'crear-cuenta' ) ) {
+	if ( epc_is_panel_page() || is_page( 'login' ) || is_page( 'crear-cuenta' ) || is_page( 'pqrs' ) || is_page( 'encuesta-satisfaccion' ) ) {
 		wp_enqueue_style(
 			'epc-cajica-panel',
 			$theme_uri . '/assets/css/panel.css',
