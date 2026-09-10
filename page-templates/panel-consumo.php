@@ -1,5 +1,7 @@
 <?php
 /** /panel/consumo/ — historial de consumo (m³) con alerta de anomalía. */
+$user      = wp_get_current_user();
+$cuenta_id = '1608353';
 epc_html_open( 'Historial de consumo — Portal del Ciudadano · EPC Cajicá' );
 epc_panel_open( 'consumo' );
 ?>
@@ -9,6 +11,12 @@ epc_panel_open( 'consumo' );
 		<p>Metros cúbicos (m³) de agua registrados por tu medidor mes a mes. Cuenta N.° 1608353 · Medidor MED-04471.</p>
 	</div>
 
+	<?php if ( ! epc_usuario_tiene_acceso_cuenta( $user, $cuenta_id ) ) : ?>
+	<div class="alerta aviso" style="margin-top:22px">
+		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+		<span>Todavía no tienes acceso a esta cuenta. <a href="<?php echo esc_url( home_url( '/panel/mis-cuentas/' ) ); ?>">Ve el estado de tu solicitud →</a></span>
+	</div>
+	<?php else : ?>
 	<div class="alerta-consumo" style="background:#fff7ed;border:1px solid #fbd9a8;border-radius:var(--radio-s);padding:16px 20px;margin:18px 0;display:flex;gap:12px;align-items:flex-start">
 		<svg viewBox="0 0 24 24" fill="none" stroke="#e07f22" stroke-width="1.8" width="22" height="22" style="flex-shrink:0;margin-top:2px"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
 		<div>
@@ -39,6 +47,7 @@ epc_panel_open( 'consumo' );
 		<div class="grafico-barra"><span class="valor-barra">16</span><div class="barra" style="--h:73%"></div><span class="mes-barra">07-26</span></div>
 		<div class="grafico-barra"><span class="valor-barra">9</span><div class="barra" style="--h:41%"></div><span class="mes-barra">08-26</span></div>
 	</div>
+	<?php endif; ?>
 </div>
 <?php
 epc_panel_close();

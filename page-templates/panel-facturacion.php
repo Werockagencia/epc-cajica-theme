@@ -1,5 +1,7 @@
 <?php
 /** /panel/facturacion/ — historial de facturación (datos de ejemplo). */
+$user      = wp_get_current_user();
+$cuenta_id = '1608353';
 epc_html_open( 'Historial de facturación — Portal del Ciudadano · EPC Cajicá' );
 epc_panel_open( 'facturacion' );
 ?>
@@ -9,6 +11,12 @@ epc_panel_open( 'facturacion' );
 		<p>Consulta y descarga tus facturas emitidas por acueducto, alcantarillado y aseo. Cuenta N.° 1608353 · DG 2 Sur No 12-150.</p>
 	</div>
 
+	<?php if ( ! epc_usuario_tiene_acceso_cuenta( $user, $cuenta_id ) ) : ?>
+	<div class="alerta aviso" style="margin-top:22px">
+		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+		<span>Todavía no tienes acceso a esta cuenta. <a href="<?php echo esc_url( home_url( '/panel/mis-cuentas/' ) ); ?>">Ve el estado de tu solicitud →</a></span>
+	</div>
+	<?php else : ?>
 	<div class="stat-grid" style="margin-top:22px">
 		<div class="stat"><div class="valor">$69.320</div><div class="lbl">Última factura</div></div>
 		<div class="stat"><div class="valor">13 ago 2026</div><div class="lbl">Próximo vencimiento</div></div>
@@ -28,6 +36,7 @@ epc_panel_open( 'facturacion' );
 			</tbody>
 		</table>
 	</div>
+	<?php endif; ?>
 </div>
 <?php
 epc_panel_close();

@@ -1,5 +1,7 @@
 <?php
 /** /panel/pagar-factura/ — pago de factura (mock, listo para la URL de pago de Integra). */
+$user      = wp_get_current_user();
+$cuenta_id = '1608353';
 epc_html_open( 'Pagar factura — Portal del Ciudadano · EPC Cajicá' );
 epc_panel_open( 'pagar-factura' );
 ?>
@@ -9,6 +11,12 @@ epc_panel_open( 'pagar-factura' );
 		<p>Paga en línea, de forma rápida y segura, a través de la pasarela de pagos autorizada por la EPC. Cuenta N.° 1608353.</p>
 	</div>
 
+	<?php if ( ! epc_usuario_tiene_acceso_cuenta( $user, $cuenta_id ) ) : ?>
+	<div class="alerta aviso" style="margin-top:22px">
+		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+		<span>Todavía no tienes acceso a esta cuenta. <a href="<?php echo esc_url( home_url( '/panel/mis-cuentas/' ) ); ?>">Ve el estado de tu solicitud →</a></span>
+	</div>
+	<?php else : ?>
 	<div class="tabla-wrap">
 		<table class="panel-tabla">
 			<thead><tr><th></th><th>N.° factura</th><th>Tipo</th><th>Valor</th><th>Fecha de vencimiento</th></tr></thead>
@@ -53,6 +61,7 @@ epc_panel_open( 'pagar-factura' );
 		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
 	</button>
 	<p style="font-size:12px;color:var(--gris-texto);margin-top:10px">Al confirmar serás redirigido a la pasarela de pagos de Integra. El flujo completo (banco, confirmación, recibo) lo gestiona Integra.</p>
+	<?php endif; ?>
 </div>
 <?php
 epc_panel_close();

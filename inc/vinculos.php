@@ -28,6 +28,19 @@ function epc_vinculo_set_estado( $user_id, $cuenta_id, $estado ) {
 }
 
 /**
+ * Un propietario siempre tiene acceso a su propia cuenta; un arrendatario
+ * solo cuando el propietario ya aprobó su vínculo con esa cuenta puntual.
+ * Centraliza la regla que antes solo se aplicaba en Mis cuentas -- las demás
+ * páginas del panel (facturación, consumo, pagos, pagar factura) mostraban
+ * los datos igual aunque el arrendatario siguiera pendiente de aprobación.
+ */
+function epc_usuario_tiene_acceso_cuenta( $user, $cuenta_id ) {
+	if ( epc_user_is_propietario( $user ) ) return true;
+	if ( epc_user_is_arrendatario( $user ) ) return 'aprobado' === epc_vinculo_estado( $user->ID, $cuenta_id );
+	return false;
+}
+
+/**
  * Todos los usuarios arrendatarios vinculados (o solicitando vincularse) a
  * una cuenta, con su estado. Solo el propietario de esa cuenta debe llamar
  * a esto — no hay filtro de permisos aquí, se controla en la vista.

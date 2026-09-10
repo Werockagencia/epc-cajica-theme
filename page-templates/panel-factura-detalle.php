@@ -1,10 +1,20 @@
 <?php
 /** /panel/factura-detalle/ — detalle de una factura puntual (mock). */
+$user      = wp_get_current_user();
+$cuenta_id = '1608353';
 epc_html_open( 'Detalle de factura — Portal del Ciudadano · EPC Cajicá' );
 epc_panel_open( 'facturacion' );
 ?>
 <div class="migas"><a href="<?php echo esc_url( home_url( '/panel/facturacion/' ) ); ?>">← Volver al historial de facturación</a></div>
 
+<?php if ( ! epc_usuario_tiene_acceso_cuenta( $user, $cuenta_id ) ) : ?>
+<div class="panel-card">
+	<div class="alerta aviso">
+		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+		<span>Todavía no tienes acceso a esta cuenta. <a href="<?php echo esc_url( home_url( '/panel/mis-cuentas/' ) ); ?>">Ve el estado de tu solicitud →</a></span>
+	</div>
+</div>
+<?php else : ?>
 <div class="panel-card">
 	<div class="factura-cabecera">
 		<div>
@@ -37,6 +47,7 @@ epc_panel_open( 'facturacion' );
 
 	<p style="font-size:13px;color:var(--gris-texto);margin-top:18px">¿No entiendes algún cargo de tu factura? Consulta la <a href="<?php echo esc_url( home_url( '/atencion/como-leer-tu-factura/' ) ); ?>">guía de cómo leer tu factura</a>.</p>
 </div>
+<?php endif; ?>
 <?php
 epc_panel_close();
 epc_html_close();
