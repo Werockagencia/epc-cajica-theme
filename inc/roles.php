@@ -42,6 +42,20 @@ add_action( 'init', function () {
 			'epc_automatizar_pagos'    => true,
 		] ) );
 	}
+
+	// Roles internos de WordPress (gestión del sitio, no del portal del
+	// ciudadano): Administrador ya existe por defecto con acceso total.
+	// Informática y Comunicaciones son equivalentes al rol nativo "Editor"
+	// (páginas, entradas, medios) — ajustar capacidades puntuales si el
+	// cliente pide algo más fino (ej. Comunicaciones sin borrar páginas).
+	$editor = get_role( 'editor' );
+	$editor_caps = $editor ? $editor->capabilities : [];
+	if ( ! get_role( 'epc_informatica' ) ) {
+		add_role( 'epc_informatica', 'Informática', $editor_caps );
+	}
+	if ( ! get_role( 'epc_comunicaciones' ) ) {
+		add_role( 'epc_comunicaciones', 'Comunicaciones', $editor_caps );
+	}
 } );
 
 /**

@@ -118,6 +118,14 @@ add_action( 'add_meta_boxes', function () {
 	add_meta_box( 'epc_revision', 'Revisión Comercial', 'epc_render_revision_metabox', [ 'epc_pqrs', 'epc_tramite' ], 'normal', 'high' );
 } );
 
+// El formulario de edición de WP no trae multipart/form-data por defecto -- sin
+// esto, el <input type="file"> del adjunto PDF nunca llega a $_FILES.
+add_action( 'post_edit_form_tag', function () {
+	if ( in_array( get_post_type(), [ 'epc_pqrs', 'epc_tramite' ], true ) ) {
+		echo ' enctype="multipart/form-data"';
+	}
+} );
+
 function epc_render_revision_metabox( $post ) {
 	wp_nonce_field( 'epc_revision_save', 'epc_revision_nonce' );
 	$get = fn( $k ) => get_post_meta( $post->ID, '_epc_' . $k, true );
@@ -144,9 +152,32 @@ function epc_render_revision_metabox( $post ) {
 	<p><label for="epc_respuesta"><strong>Respuesta al ciudadano</strong> (si se responde directo, sin pasar a Integra)</label><br>
 		<textarea name="epc_respuesta" id="epc_respuesta" rows="4" style="width:100%"><?php echo esc_textarea( $get( 'respuesta' ) ); ?></textarea>
 	</p>
+	<p>
+		<label for="epc_respuesta_pdf"><strong>Adjuntar respuesta escaneada (PDF)</strong></label><br>
+		<span class="description">Para cuando Integra entrega la respuesta como un escaneo/PDF y el asesor solo necesita subirlo.</span><br>
+		<?php $pdf_id = (int) get_post_meta( $post->ID, '_epc_respuesta_pdf', true ); ?>
+		<?php if ( $pdf_id && get_post( $pdf_id ) ) : ?>
+			<p><a href="<?php echo esc_url( wp_get_attachment_url( $pdf_id ) ); ?>" target="_blank">📎 <?php echo esc_html( basename( get_attached_file( $pdf_id ) ) ); ?></a>
+			— <label><input type="checkbox" name="epc_respuesta_pdf_quitar" value="1"> quitar</label></p>
+		<?php endif; ?>
+		<input type="file" name="epc_respuesta_pdf" accept="application/pdf">
+	</p>
 	<p class="description">Si el caso requiere gestión en Integra (pago, cambio de datos, etc.), márcalo como "Escalada a Integra" — el estado quedará visible para el ciudadano igual.</p>
 	<?php
 }
+
+// Una PQRS anónima no debe dejar de serlo solo porque un asesor la abrió y
+// guardó cambios: el cuadro "Autor" de WP no tiene opción "(anónimo)", así
+// que al guardar el formulario reasigna el post a quien esté editando. Se
+// reafirma post_author=0 después de cada guardado si la PQRS nació anónima.
+add_action( 'save_post', function ( $post_id ) {
+	static $en_progreso = [];
+	if ( 'epc_pqrs' !== get_post_type( $post_id ) || isset( $en_progreso[ $post_id ] ) ) return;
+	if ( ! get_post_meta( $post_id, '_epc_anonimo', true ) ) return;
+	if ( 0 === (int) get_post( $post_id )->post_author ) return;
+	$en_progreso[ $post_id ] = true;
+	wp_update_post( [ 'ID' => $post_id, 'post_author' => 0 ] );
+}, 20 );
 
 add_action( 'save_post', function ( $post_id ) {
 	if ( ! isset( $_POST['epc_revision_nonce'] ) || ! wp_verify_nonce( $_POST['epc_revision_nonce'], 'epc_revision_save' ) ) return;
@@ -156,6 +187,18 @@ add_action( 'save_post', function ( $post_id ) {
 	}
 	if ( isset( $_POST['epc_respuesta'] ) ) {
 		update_post_meta( $post_id, '_epc_respuesta', sanitize_textarea_field( wp_unslash( $_POST['epc_respuesta'] ) ) );
+	}
+	if ( ! empty( $_POST['epc_respuesta_pdf_quitar'] ) ) {
+		delete_post_meta( $post_id, '_epc_respuesta_pdf' );
+	}
+	if ( ! empty( $_FILES['epc_respuesta_pdf']['name'] ) ) {
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/media.php';
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+		$attachment_id = media_handle_upload( 'epc_respuesta_pdf', $post_id );
+		if ( ! is_wp_error( $attachment_id ) ) {
+			update_post_meta( $post_id, '_epc_respuesta_pdf', $attachment_id );
+		}
 	}
 } );
 
