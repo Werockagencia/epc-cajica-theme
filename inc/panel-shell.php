@@ -25,10 +25,21 @@ add_filter( 'template_include', function ( $template ) {
 } );
 
 /**
- * Ítems del menú lateral del panel. `cap` opcional: solo se muestra si el
- * usuario actual tiene esa capacidad (así el menú cambia según el rol).
+ * Ítems del menú lateral del panel. El menú cambia según el rol: personal
+ * EPC (Comercial/Administrador) ve su propia bandeja de gestión en vez de
+ * las páginas de un ciudadano (facturación, consumo, pagos no le aplican).
  */
 function epc_panel_nav_items() {
+	$user = wp_get_current_user();
+	if ( in_array( 'epc_comercial', (array) $user->roles, true ) ) {
+		return [
+			[ 'slug' => 'comercial', 'label' => 'Panel Comercial', 'icon' => 'home' ],
+			[ 'slug' => 'comercial-pqrs', 'label' => 'PQRS', 'icon' => 'pqrs' ],
+			[ 'slug' => 'comercial-tramites', 'label' => 'Trámites', 'icon' => 'tramites' ],
+			[ 'slug' => 'comercial-validaciones', 'label' => 'Validaciones de propietario', 'icon' => 'user' ],
+			[ 'slug' => 'perfil', 'label' => 'Perfil', 'icon' => 'user' ],
+		];
+	}
 	return [
 		[ 'slug' => '', 'label' => 'Mi panel', 'icon' => 'home' ],
 		[ 'slug' => 'perfil', 'label' => 'Perfil', 'icon' => 'user' ],

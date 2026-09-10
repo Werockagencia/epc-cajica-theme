@@ -2,7 +2,25 @@
 /**
  * /panel/perfil/ — datos de la cuenta del usuario autenticado.
  */
-$user = wp_get_current_user();
+$user      = wp_get_current_user();
+$cuenta_id = '1608353';
+$es_staff  = in_array( 'epc_comercial', (array) $user->roles, true ) || in_array( 'administrator', (array) $user->roles, true );
+
+if ( ! empty( $_POST['epc_validacion_submit'] ) && wp_verify_nonce( $_POST['epc_validacion_nonce'] ?? '', 'epc_validacion_propietario' ) ) {
+	$doc_id = 0;
+	if ( ! empty( $_FILES['epc_validacion_doc']['name'] ) ) {
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/media.php';
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+		$attachment_id = media_handle_upload( 'epc_validacion_doc', 0 );
+		if ( ! is_wp_error( $attachment_id ) ) {
+			$doc_id = $attachment_id;
+		}
+	}
+	epc_solicitar_validacion_propietario( $user->ID, $doc_id, $cuenta_id );
+	wp_safe_redirect( home_url( '/panel/perfil/?validacion=enviada' ) );
+	exit;
+}
 
 epc_html_open( 'Mi perfil — Portal del Ciudadano · EPC Cajicá' );
 epc_panel_open( 'perfil' );
@@ -46,13 +64,49 @@ epc_panel_open( 'perfil' );
 	<button class="btn btn-primario" type="button">Actualizar canal preferente</button>
 </div>
 
-<?php if ( ! epc_user_is_propietario( $user ) ) : ?>
+<?php if ( ! $es_staff && ! epc_user_is_propietario( $user ) ) :
+	$estado_validacion = epc_validacion_propietario_estado( $user->ID );
+?>
 <div class="panel-card" style="background:linear-gradient(135deg,#f3f7f6,#eaf4e5);border:1px dashed var(--verde-oscuro)">
-	<div class="panel-card-header">
-		<h2>Valida tu cuenta como propietario</h2>
-		<p>Si eres el titular del predio, valida tu cuenta como propietario para poder gestionar acuerdos de pago y cambio de suscriptor. Necesitarás tu certificado de tradición y libertad o tu último recibo pagado.</p>
-	</div>
-	<button class="btn btn-outline" type="button">Iniciar validación de propietario</button>
+
+	<?php if ( 'pendiente' === $estado_validacion ) : ?>
+		<div class="panel-card-header">
+			<h2>Validación de propietario en revisión</h2>
+			<p>Tu solicitud ya fue radicada y está siendo revisada por el equipo Comercial de la EPC. Te avisaremos cuando la aprueben.</p>
+		</div>
+		<span class="estado emitida">En revisión</span>
+
+	<?php else : ?>
+		<div class="panel-card-header">
+			<h2>Valida tu cuenta como propietario</h2>
+			<p>Si eres el titular del predio, valida tu cuenta como propietario para poder gestionar acuerdos de pago y cambio de suscriptor. Necesitarás tu certificado de tradición y libertad o tu último recibo pagado.</p>
+		</div>
+
+		<?php if ( 'rechazado' === $estado_validacion ) : ?>
+			<div class="alerta aviso" style="margin-bottom:16px">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+				<span>Tu solicitud anterior no fue aprobada. Verifica tu documento y vuelve a intentarlo.</span>
+			</div>
+		<?php endif; ?>
+
+		<button class="btn btn-outline" type="button" data-toggle-form="form-validacion-propietario">Iniciar validación de propietario</button>
+
+		<div class="form-inline" id="form-form-validacion-propietario" hidden>
+			<form method="post" enctype="multipart/form-data">
+				<div class="campo">
+					<label>Documento soporte <span class="req">*</span></label>
+					<div class="adjuntar">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
+						<div class="txt"><strong>Sube tu certificado</strong> de tradición y libertad o tu último recibo pagado — PDF, PNG o JPG</div>
+					</div>
+					<input type="file" name="epc_validacion_doc" accept="application/pdf,image/*" required>
+				</div>
+				<?php wp_nonce_field( 'epc_validacion_propietario', 'epc_validacion_nonce' ); ?>
+				<input type="hidden" name="epc_validacion_submit" value="1">
+				<button class="btn btn-azul" type="submit">Enviar para revisión</button>
+			</form>
+		</div>
+	<?php endif; ?>
 </div>
 <?php endif; ?>
 

@@ -63,6 +63,8 @@ add_action( 'init', function () {
  */
 function epc_user_role_label( $user = null ) {
 	$user = $user ?: wp_get_current_user();
+	if ( in_array( 'administrator', (array) $user->roles, true ) ) return 'Administrador';
+	if ( in_array( 'epc_comercial', (array) $user->roles, true ) ) return 'Comercial';
 	if ( in_array( 'epc_propietario', (array) $user->roles, true ) ) return 'Propietario';
 	if ( in_array( 'epc_arrendatario', (array) $user->roles, true ) ) return 'Arrendatario';
 	if ( in_array( 'epc_usuario', (array) $user->roles, true ) ) return 'Usuario (sin validar)';

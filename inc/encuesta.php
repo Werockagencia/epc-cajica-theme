@@ -82,7 +82,7 @@ function epc_render_encuesta_reporte() {
 				$pct = $total ? round( $por_calificacion[ $i ] / $total * 100 ) : 0;
 			?>
 				<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-					<div style="width:60px"><?php echo str_repeat( '⭐', $i ); ?></div>
+					<div style="width:80px;white-space:nowrap;flex-shrink:0"><?php echo str_repeat( '⭐', $i ); ?></div>
 					<div style="flex:1;background:#f0f0f1;border-radius:4px;overflow:hidden;height:18px">
 						<div style="width:<?php echo esc_attr( $pct ); ?>%;background:#2271b1;height:100%"></div>
 					</div>

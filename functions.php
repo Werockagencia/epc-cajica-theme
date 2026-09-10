@@ -9,7 +9,7 @@ require get_template_directory() . '/inc/roles.php';
 // para los roles del panel, aunque sí para editores/administradores.
 add_filter( 'show_admin_bar', function ( $show ) {
 	$user = wp_get_current_user();
-	$epc_roles = [ 'epc_usuario', 'epc_propietario', 'epc_arrendatario' ];
+	$epc_roles = [ 'epc_usuario', 'epc_propietario', 'epc_arrendatario', 'epc_comercial' ];
 	if ( array_intersect( $epc_roles, (array) $user->roles ) ) {
 		return false;
 	}
@@ -21,6 +21,7 @@ require get_template_directory() . '/inc/pqrs-tramites.php';
 require get_template_directory() . '/inc/comercial-panel.php';
 require get_template_directory() . '/inc/encuesta.php';
 require get_template_directory() . '/inc/vinculos.php';
+require get_template_directory() . '/inc/validacion-propietario.php';
 
 /**
  * Abre el <html><head>...<body> de una plantilla PHP clásica (login/panel),

@@ -1,6 +1,15 @@
 <?php
 /** /panel/ — dashboard de bienvenida, primer vistazo a la cuenta. */
-$user      = wp_get_current_user();
+$user = wp_get_current_user();
+
+// El botón "Mi cuenta" del sitio público siempre enlaza a /panel/ -- si
+// quien entra es Comercial, lo mandamos a su propio panel en vez de
+// mostrarle el dashboard de un ciudadano ("vincula tu cuenta", etc.).
+if ( in_array( 'epc_comercial', (array) $user->roles, true ) && ! in_array( 'administrator', (array) $user->roles, true ) ) {
+	wp_safe_redirect( home_url( '/panel/comercial/' ) );
+	exit;
+}
+
 $cuenta_id = '1608353'; // Cuenta de ejemplo, misma de panel-mis-cuentas.php (mock, listo para Integra).
 
 // Un arrendatario solo debe ver cifras reales de la cuenta si su vínculo ya

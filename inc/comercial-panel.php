@@ -1,25 +1,29 @@
 <?php
 /**
- * Panel propio para el rol "Personal EPC (Comercial)": al iniciar sesión
- * caen directo aquí (no al escritorio genérico de WordPress), con un
- * resumen de PQRS/trámites por estado, accesos directos, y descarga de
- * reporte CSV — la base para cuando se conecte a Integra y este mismo
- * panel muestre también lo descargado de allá.
+ * Comercial entra por el mismo /login/ del Portal del Ciudadano (ver
+ * inc/auth.php) y su panel se ve igual al de Propietario/Arrendatario
+ * (mismo epc_panel_open()) -- no tiene por qué pisar wp-admin. Las
+ * páginas admin.php?page=epc-comercial / edit.php?post_type=epc_pqrs
+ * siguen existiendo por compatibilidad (Administrador sí las usa), pero
+ * ya no son la puerta de entrada de Comercial.
  */
 
 add_filter( 'login_redirect', function ( $redirect_to, $requested_redirect_to, $user ) {
-	if ( $user instanceof WP_User && in_array( 'epc_comercial', (array) $user->roles, true ) ) {
-		return admin_url( 'admin.php?page=epc-comercial' );
+	if ( $user instanceof WP_User && in_array( 'epc_comercial', (array) $user->roles, true ) && ! in_array( 'administrator', (array) $user->roles, true ) ) {
+		return home_url( '/panel/comercial/' );
 	}
 	return $redirect_to;
 }, 10, 3 );
 
-// Si un usuario Comercial cae en el escritorio genérico (ej. bookmark viejo),
-// lo mandamos a su panel en vez de dejarlo ver el dashboard de WordPress.
-add_action( 'load-index.php', function () {
+// Comercial (sin ser también Administrador) no debe operar desde wp-admin:
+// cualquier pantalla del escritorio lo regresa a su panel, salvo las
+// llamadas admin-post.php/admin-ajax.php que sí necesita (ej. exportar CSV).
+add_action( 'admin_init', function () {
+	if ( wp_doing_ajax() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) return;
+	if ( strpos( $_SERVER['PHP_SELF'] ?? '', 'admin-post.php' ) !== false ) return;
 	$user = wp_get_current_user();
 	if ( in_array( 'epc_comercial', (array) $user->roles, true ) && ! in_array( 'administrator', (array) $user->roles, true ) ) {
-		wp_safe_redirect( admin_url( 'admin.php?page=epc-comercial' ) );
+		wp_safe_redirect( home_url( '/panel/comercial/' ) );
 		exit;
 	}
 } );

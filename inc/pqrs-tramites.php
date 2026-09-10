@@ -112,6 +112,16 @@ function epc_estado_label( $estado ) {
 	return $labels[ $estado ] ?? ucfirst( $estado );
 }
 
+/** Clase CSS de .estado (panel.css) para pintar cada estado de PQRS/trámite. */
+function epc_estado_css_class( $estado ) {
+	$clases = [
+		'nuevo' => 'pendiente', 'en_revision' => 'pendiente',
+		'respondida' => 'pagado', 'aprobado' => 'pagado', 'cerrada' => 'pagado',
+		'escalada_integra' => 'emitida', 'rechazado' => 'vencida',
+	];
+	return $clases[ $estado ] ?? 'pendiente';
+}
+
 /* ---------------- Bandeja de revisión (admin) ---------------- */
 
 add_action( 'add_meta_boxes', function () {

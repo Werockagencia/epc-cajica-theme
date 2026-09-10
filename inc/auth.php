@@ -25,7 +25,14 @@ add_action( 'template_redirect', function () {
 
 	wp_set_current_user( $user->ID );
 	wp_set_auth_cookie( $user->ID, ! empty( $_POST['recordarme'] ) );
-	$redirect = ! empty( $_POST['redirect_to'] ) ? esc_url_raw( $_POST['redirect_to'] ) : home_url( '/panel/perfil/' );
+
+	// El filtro nativo 'login_redirect' de WordPress no se dispara aquí (este
+	// formulario es propio, no wp-login.php) -- Comercial entra directo a su
+	// panel, igual que Propietario/Arrendatario entran al suyo.
+	$destino_defecto = in_array( 'epc_comercial', (array) $user->roles, true ) && ! in_array( 'administrator', (array) $user->roles, true )
+		? home_url( '/panel/comercial/' )
+		: home_url( '/panel/perfil/' );
+	$redirect = ! empty( $_POST['redirect_to'] ) ? esc_url_raw( $_POST['redirect_to'] ) : $destino_defecto;
 	wp_safe_redirect( $redirect );
 	exit;
 }, 5 );
@@ -42,7 +49,11 @@ add_action( 'template_redirect', function () {
 // 3) Ya logueado no debe ver /login/ de nuevo.
 add_action( 'template_redirect', function () {
 	if ( ! is_page( 'login' ) || ! is_user_logged_in() || ! empty( $_POST['epc_login_submit'] ) ) return;
-	wp_safe_redirect( home_url( '/panel/perfil/' ) );
+	$user = wp_get_current_user();
+	$destino = in_array( 'epc_comercial', (array) $user->roles, true ) && ! in_array( 'administrator', (array) $user->roles, true )
+		? home_url( '/panel/comercial/' )
+		: home_url( '/panel/perfil/' );
+	wp_safe_redirect( $destino );
 	exit;
 }, 10 );
 
