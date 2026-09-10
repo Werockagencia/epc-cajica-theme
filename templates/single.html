@@ -1,0 +1,43 @@
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"section","className":"pagina-hero articulo-hero","layout":{"type":"constrained"}} -->
+<section class="wp-block-group pagina-hero articulo-hero">
+  <!-- wp:group {"className":"contenedor pagina-hero-wrap","layout":{"type":"constrained"}} -->
+  <div class="wp-block-group contenedor pagina-hero-wrap">
+    <!-- wp:group {"className":"pagina-hero-texto","layout":{"type":"constrained"}} -->
+    <div class="wp-block-group pagina-hero-texto">
+      <!-- wp:html --><div class="migas-pub"><a href="/">Inicio</a> / <a href="/noticias/">Noticias</a></div><!-- /wp:html -->
+      <!-- wp:post-terms {"term":"category","className":"etiqueta-hero"} /-->
+      <!-- wp:post-title {"level":1} /-->
+      <!-- wp:group {"className":"articulo-meta","layout":{"type":"flex"}} -->
+      <div class="wp-block-group articulo-meta">
+        <!-- wp:post-date {"format":"j \\d\\e F \\d\\e Y"} /-->
+      </div>
+      <!-- /wp:group -->
+    </div>
+    <!-- /wp:group -->
+  </div>
+  <!-- /wp:group -->
+</section>
+<!-- /wp:group -->
+
+<!-- wp:group {"tagName":"main","className":"seccion","layout":{"type":"constrained"}} -->
+<main class="wp-block-group seccion">
+  <!-- wp:group {"className":"contenedor","layout":{"type":"constrained"}} -->
+  <div class="wp-block-group contenedor">
+
+    <!-- wp:group {"tagName":"article","className":"articulo","layout":{"type":"constrained"}} -->
+    <article class="wp-block-group articulo">
+      <!-- wp:post-featured-image {"className":"articulo-portada"} /-->
+      <!-- wp:post-content {"className":"articulo-prosa"} /-->
+    </article>
+    <!-- /wp:group -->
+
+    <!-- wp:html --><div class="articulo-volver"><a href="/noticias/">← Volver a Noticias</a></div><!-- /wp:html -->
+
+  </div>
+  <!-- /wp:group -->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
