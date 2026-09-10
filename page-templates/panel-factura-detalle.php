@@ -35,7 +35,7 @@ epc_panel_open( 'facturacion' );
 		</table>
 	</div>
 
-	<p style="font-size:13px;color:var(--gris-texto);margin-top:18px">¿No entiendes algún cargo de tu factura? Consulta la <a href="<?php echo esc_url( home_url( '/panel/como-leer-tu-factura/' ) ); ?>">guía de cómo leer tu factura</a>.</p>
+	<p style="font-size:13px;color:var(--gris-texto);margin-top:18px">¿No entiendes algún cargo de tu factura? Consulta la <a href="<?php echo esc_url( home_url( '/atencion/como-leer-tu-factura/' ) ); ?>">guía de cómo leer tu factura</a>.</p>
 </div>
 <?php
 epc_panel_close();
