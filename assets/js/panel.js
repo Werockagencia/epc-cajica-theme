@@ -76,4 +76,15 @@
     pintarCuenta(selCuenta.value);
   }
 
+  // Selector de medio de pago (Pagar factura): click en una tarjeta la marca
+  // como seleccionada y quita la marca de las demás.
+  document.querySelectorAll('.medio-pago-grid').forEach(function (grid) {
+    grid.querySelectorAll('.medio-pago').forEach(function (tarjeta) {
+      tarjeta.addEventListener('click', function () {
+        grid.querySelectorAll('.medio-pago').forEach(function (t) { t.classList.remove('seleccionado'); });
+        tarjeta.classList.add('seleccionado');
+      });
+    });
+  });
+
 })();

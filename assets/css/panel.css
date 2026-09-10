@@ -501,3 +501,33 @@ table.panel-tabla tr:hover td { background: var(--gris-claro); }
 .chat-primero .icono-chat { width: 46px; height: 46px; }
 .chat-primero .icono-chat svg { width: 22px; height: 22px; }
 .panel-usuario-avatar { width: 36px; height: 36px; font-size: 13px; }
+
+/* ===================== Selector de medio de pago (Pagar factura) =====================
+   No tenía NINGUNA regla propia -- el ícono de cada tarjeta se renderizaba a su
+   tamaño intrínseco (~970px, ocupando toda la pantalla) por falta de width/height,
+   y las tarjetas ni el resumen de pago tenían ningún estilo (bug real encontrado
+   en la auditoría de roles de usuario). */
+.medio-pago-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }
+.medio-pago {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  border: 1.5px solid var(--gris-borde); border-radius: var(--radio-m);
+  padding: 18px; cursor: pointer; transition: .16s;
+}
+.medio-pago:hover { border-color: var(--azul); box-shadow: var(--sombra); }
+.medio-pago.seleccionado { border-color: var(--azul); background: rgba(36,132,198,.05); box-shadow: 0 0 0 1.5px var(--azul) inset; }
+.icono-pago {
+  width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+  background: var(--gris-claro); color: var(--azul);
+  display: flex; align-items: center; justify-content: center;
+}
+.medio-pago.seleccionado .icono-pago { background: var(--azul); color: var(--blanco); }
+.icono-pago svg { width: 20px; height: 20px; }
+.nombre-pago { font-size: 13.5px; font-weight: 700; color: var(--azul-oscuro); line-height: 1.35; }
+@media (max-width: 700px) { .medio-pago-grid { grid-template-columns: 1fr; } }
+
+.resumen-pago {
+  margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--gris-borde);
+  max-width: 360px;
+}
+.resumen-linea { display: flex; justify-content: space-between; font-size: 13.5px; color: var(--gris-texto); padding: 6px 0; }
+.resumen-linea.total { font-size: 16px; font-weight: 800; color: var(--azul-oscuro); border-top: 1px solid var(--gris-borde); margin-top: 6px; padding-top: 12px; }
