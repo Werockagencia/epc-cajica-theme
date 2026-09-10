@@ -43,9 +43,7 @@
   var item = link.closest('.wp-block-navigation-item') || link.parentElement;
   item.classList.add('tiene-mega');
   var contenido = link.querySelector('.wp-block-navigation-item__label') || link;
-  var flecha = document.createElement('span');
-  flecha.className = 'flecha-mega';
-  contenido.appendChild(flecha);
+  contenido.insertAdjacentHTML('beforeend', '<svg class="flecha-mega" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
   link.setAttribute('aria-expanded', 'false');
 
   var cerrarTimer;

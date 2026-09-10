@@ -1329,14 +1329,22 @@ body.menu-movil-abierto { overflow: hidden; }
    muertos "#"). Se activa con JS (hover en escritorio, click en táctil)
    sobre el enlace "Servicios" ya renderizado por el bloque de navegación. */
 .encabezado { position: relative; }
-.nav-principal-epc .wp-block-navigation-item.tiene-mega > .wp-block-navigation-item__content { display: inline-flex; align-items: center; gap: 5px; }
-.nav-principal-epc .wp-block-navigation-item.tiene-mega .flecha-mega { width: 9px; height: 9px; border-right: 1.8px solid currentColor; border-bottom: 1.8px solid currentColor; transform: rotate(45deg); margin-top: -3px; transition: transform .18s; }
-.nav-principal-epc .wp-block-navigation-item.tiene-mega.abierto .flecha-mega { transform: rotate(-135deg); margin-top: 3px; }
+.nav-principal-epc .wp-block-navigation-item.tiene-mega > .wp-block-navigation-item__content { display: inline-flex; align-items: center; gap: 6px; }
+.nav-principal-epc .wp-block-navigation-item.tiene-mega .flecha-mega { width: 13px; height: 13px; flex-shrink: 0; color: var(--azul-oscuro); transition: transform .2s; }
+.nav-principal-epc .wp-block-navigation-item.tiene-mega:hover .flecha-mega,
+.nav-principal-epc .wp-block-navigation-item.tiene-mega.abierto .flecha-mega { color: var(--azul); }
+.nav-principal-epc .wp-block-navigation-item.tiene-mega.abierto .flecha-mega { transform: rotate(180deg); }
 
 .servicios-mega {
   display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 180;
   background: var(--blanco); border-top: 1px solid var(--gris-borde);
   box-shadow: 0 24px 48px rgba(4,57,86,.14);
+  /* El header es un grupo de bloques con layout "constrained": WordPress le
+     aplica max-width + margin:auto a todos sus hijos directos por defecto,
+     lo que angostaba y centraba este panel en vez de dejarlo a todo el
+     ancho -- se anula explícitamente. */
+  max-width: none !important;
+  margin: 0 !important;
 }
 .servicios-mega.abierto { display: block; }
 .servicios-mega-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 32px 0; }
