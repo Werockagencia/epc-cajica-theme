@@ -1457,3 +1457,15 @@ table.panel-tabla tr:hover td { background: var(--gris-claro); }
 .certificaciones-logos { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
 .certificaciones-logos img { height: 56px; width: auto; filter: grayscale(1); opacity: .75; transition: .2s; }
 .certificaciones-logos a:hover img { filter: none; opacity: 1; }
+
+/* ===================== Heroes con foto — páginas nuevas de esta ronda =====================
+   El wireframe ya traía .hero-atencion/.hero-contratacion/.hero-transparencia/.hero-contacto
+   con foto real; estas páginas nuevas (construidas en WordPress, no en el wireframe original)
+   usaban el .pagina-hero plano sin foto — se completa la misma familia visual. */
+.pagina-hero.hero-acueducto { background-image: radial-gradient(rgba(255,255,255,.09) 1.4px, transparent 1.4px), linear-gradient(135deg, rgba(4,57,86,.92) 0%, rgba(36,132,198,.82) 55%, rgba(13,107,88,.68) 100%), url("../images/acueducto-campo.jpg"); background-position: 0 0, center 45%, center 45%; }
+.pagina-hero.hero-aseo { background-image: radial-gradient(rgba(255,255,255,.09) 1.4px, transparent 1.4px), linear-gradient(135deg, rgba(4,57,86,.92) 0%, rgba(107,168,44,.78) 60%, rgba(141,198,63,.6) 100%), url("../images/aseo-operacion.jpg"); background-position: 0 0, center 40%, center 40%; }
+.pagina-hero.hero-alcantarillado { background-image: radial-gradient(rgba(255,255,255,.09) 1.4px, transparent 1.4px), linear-gradient(135deg, rgba(4,57,86,.92) 0%, rgba(224,127,34,.75) 60%, rgba(239,146,59,.6) 100%), url("../images/alcantarillado-equipo.jpg"); background-position: 0 0, center 40%, center 40%; }
+.pagina-hero.hero-financiera { background-image: radial-gradient(rgba(255,255,255,.09) 1.4px, transparent 1.4px), linear-gradient(135deg, rgba(4,57,86,.94) 0%, rgba(10,84,120,.86) 100%), url("../images/gerencia-aerea.jpg"); background-position: 0 0, center 35%, center 35%; }
+.pagina-hero.hero-participa { background-image: radial-gradient(rgba(255,255,255,.09) 1.4px, transparent 1.4px), linear-gradient(135deg, rgba(4,57,86,.9) 0%, rgba(13,107,88,.8) 100%), url("../images/encuesta-persona.jpg"); background-position: 0 0, center 30%, center 30%; }
+.pagina-hero.hero-portafolio { background-image: radial-gradient(rgba(255,255,255,.09) 1.4px, transparent 1.4px), linear-gradient(135deg, rgba(4,57,86,.92) 0%, rgba(10,84,120,.85) 50%, rgba(13,107,88,.72) 100%), url("../images/atencion-oficina.jpg"); }
+.pagina-hero.hero-kids { background-image: radial-gradient(rgba(255,255,255,.14) 1.4px, transparent 1.4px), linear-gradient(135deg, var(--verde-oscuro) 0%, var(--azul) 55%, var(--naranja) 130%); }
