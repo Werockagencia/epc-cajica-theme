@@ -7,7 +7,9 @@
  * del Propietario (solo el titular del predio puede autorizarlos).
  */
 $user            = wp_get_current_user();
+$cuenta_id       = '1608353';
 $es_propietario  = epc_user_is_propietario( $user );
+$tiene_acceso    = epc_usuario_tiene_acceso_cuenta( $user, $cuenta_id );
 $radicado        = null;
 
 if ( ! empty( $_POST['epc_tramite_submit'] ) && wp_verify_nonce( $_POST['epc_tramite_nonce'] ?? '', 'epc_tramite' ) ) {
@@ -68,6 +70,13 @@ epc_panel_open( 'panel-tramites' );
 	<h2 style="font-size:16px;margin-bottom:4px">O radica el formulario directamente</h2>
 	<p style="font-size:13px;color:var(--gris-texto);margin-bottom:18px">Cada trámite se radica con los soportes que la normatividad exige, y queda con número de seguimiento.</p>
 
+	<?php if ( ! $tiene_acceso ) : ?>
+	<div class="alerta aviso">
+		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+		<span>Necesitas una cuenta vinculada y aprobada para radicar trámites sobre un predio. <a href="<?php echo esc_url( home_url( '/panel/mis-cuentas/' ) ); ?>">Vincula tu cuenta →</a></span>
+	</div>
+	<?php else : ?>
+
 	<?php if ( ! $es_propietario ) : ?>
 	<p style="font-size:12.5px;color:var(--naranja-h);background:#fdf1e6;border-radius:var(--radio-s);padding:10px 14px;margin-bottom:16px">Como arrendatario ves solo los trámites que puedes gestionar. "Cambio de suscriptor" y "Suspensión temporal" solo puede radicarlos el propietario validado del predio.</p>
 	<?php endif; ?>
@@ -99,6 +108,7 @@ epc_panel_open( 'panel-tramites' );
 			</div>
 		<?php endforeach; ?>
 	</div>
+	<?php endif; ?>
 </div>
 
 <div class="panel-card">
