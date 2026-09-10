@@ -19,6 +19,7 @@ require get_template_directory() . '/inc/auth.php';
 require get_template_directory() . '/inc/panel-shell.php';
 require get_template_directory() . '/inc/pqrs-tramites.php';
 require get_template_directory() . '/inc/comercial-panel.php';
+require get_template_directory() . '/inc/encuesta.php';
 require get_template_directory() . '/inc/vinculos.php';
 
 /**
