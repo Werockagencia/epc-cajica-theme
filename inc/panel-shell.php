@@ -37,6 +37,7 @@ function epc_panel_nav_items() {
 			[ 'slug' => 'comercial-pqrs', 'label' => 'PQRS', 'icon' => 'pqrs' ],
 			[ 'slug' => 'comercial-tramites', 'label' => 'Trámites', 'icon' => 'tramites' ],
 			[ 'slug' => 'comercial-validaciones', 'label' => 'Validaciones de propietario', 'icon' => 'user' ],
+			[ 'slug' => 'comercial-usuarios', 'label' => 'Usuarios', 'icon' => 'bars' ],
 			[ 'slug' => 'perfil', 'label' => 'Perfil', 'icon' => 'user' ],
 		];
 	}
